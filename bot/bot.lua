@@ -137,7 +137,7 @@ function ban(msg,chat,user)
     else
   bot.changeChatMemberStatus(chat, user, "Kicked")
   db:sadd(SUDO..'banned'..chat,user)
-  local t = '<code>>کاربر</code> [<b>'..user..'</b>] <code>از گروه مسدود گردید.</code>'
+  local t = '🚫کاربر [<b>'..user..'</b>] بن شد😠'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t, 1, 'html')
   end
   end
@@ -150,7 +150,7 @@ function mute(msg,chat,user)
       bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>شما نمیتوانید توانایی گفتگو در گروه را از دیگر مدیران سلب کنید!</code>', 'html')
     else
   db:sadd(SUDO..'mutes'..chat,user)
-  local t = '<code>>کاربر</code> [<b>'..user..'</b>] <code>به حالت سکوت کاربران افزوده گردید.</code>'
+  local t = '⚠️کاربر [<b>'..user..'</b>] در لیست سکوت به مدت نامحدود قرار گرفت🙂'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   end
@@ -160,7 +160,7 @@ function unban(msg,chat,user)
     return false
     end
    db:srem(SUDO..'banned'..chat,user)
-  local t = '<code>>کاربر</code> [<b>'..user..'</b>] <code>از لیست کاربران مسدود شده خارج گردید.</code>'
+  local t = '☑️کاربر [<b>'..user..'</b>]  از لیست بن خارج شد🙄'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   ------------------------------------------------------------
@@ -169,7 +169,7 @@ function unmute(msg,chat,user)
     return false
     end
    db:srem(SUDO..'mutes'..chat,user)
-  local t = '<code>>کاربر</code> [<b>'..user..'</b>]  <code>از حالت سکوت کاربران حذف گردید.</code>'
+  local t = '⚠️کاربر [<b>'..user..'</b>]  از لیست سکوت خارج شد🙂'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   ------------------------------------------------------------
@@ -258,14 +258,14 @@ function trigger_anti_spam(msg,type)
     end
   if type == 'ban' then
     if is_banned(msg.chat_id_,msg.sender_user_id_) then else
-bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>>کاربر</code> [<b>'..msg.sender_user_id_..'</b>] <code>به دلیل ارسال پیام مکرر(بیش از حد مجاز) از گروه مسدود گردید و ارتباط آن با گروه قطع گردید.</code>', 1,'md')
+bot.sendMessage(msg.chat_id_, msg.id_, 1, '👤 كاربر  [<b>'..msg.sender_user_id_..'</b>] به دليل اسپم `مسدود (بن)` شد .', 1,'html')
       end
 bot.changeChatMemberStatus(msg.chat_id_, msg.sender_user_id_, "Kicked")
   db:sadd(SUDO..'banned'..msg.chat_id_,msg.sender_user_id_)
   end
 	if type == 'mute' then
     if is_muted(msg.chat_id_,msg.sender_user_id_) then else
-bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>>کاربر</code> [<b>'..msg.sender_user_id_..'</b>] <code>به دلیل ارسال پیام مکرر(بیش از حد مجاز) به حالت سکوت منتقل شد</code>\n<code>برای خارج شدن از لیست سکوت کاربران به مدیریت مراجعه کنید</code>', 1,'md')
+bot.sendMessage(msg.chat_id_, msg.id_, 1, '👤 كاربر [<b>'..msg.sender_user_id_..'</b>] به دليل ارسال اسپم به ليست سكوت (ميوت) اضافه شد .', 1,'html')
       end
   db:sadd(SUDO..'mutes'..msg.chat_id_,msg.sender_user_id_)
 	end
@@ -542,7 +542,7 @@ end
       end
     if msg.content_ and msg.content_.members_ and msg.content_.members_[0] and msg.content_.members_[0].id_ and is_banned(msg.chat_id_,msg.content_.members_[0].id_) then
       kick(msg,msg.chat_id_,msg.content_.members_[0].id_)
-      bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>کاربر مورد نظر مسدود نمیباشد!</code>',1, 'html')
+      bot.sendMessage(msg.chat_id_, msg.id_, 1, 'کاربر مورد نظر مسدود نمیباشد!',1, 'html')
       end
 -- welcome
     local status_welcome = (db:get(SUDO..'status:welcome:'..msg.chat_id_) or 'disable') 
@@ -704,7 +704,7 @@ end
 	local users = db:scard("usersbot")
     local allmgs = db:get("allmsg")
 
-					bot.sendMessage(msg.chat_id_, msg.id_, 1, '>آمار ربات:\n\n`تعداد کل گروه ها:` [*'..gps..'*]\n`تعداد پی وی ها:` [*'..users..'*]\n`تعداد پیام ها:` [*'..allmgs..'*]', 1, 'md')
+					bot.sendMessage(msg.chat_id_, msg.id_, 1, '>آمار ربات:\n\n`تعداد کل گروه ها:` [*'..gps..'*]\n`تعداد پی وی ها:` [*'..users..'*]\n`تعداد پیام ها:` [*'..allmgs..'*]', 1, 'html')
 	end
 	  --###########################################--
       -- owner
@@ -883,7 +883,7 @@ end
             end
           tdcli_function({
       ID = "GetInlineQueryResults",
-      bot_user_id_ = 247886910,
+      bot_user_id_ = 318385937,
       chat_id_ = msg.chat_id_,
       user_location_ = {
         ID = "Location",
@@ -923,7 +923,7 @@ end
           if link then
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>>لینک گروه به گروه:</code> \n'..link, 1, 'html')
             else
-        bot.sendMessage(msg.chat_id_, msg.id_, 1, '📌 لینک ورود به گروه تنظیم نشده است\n🙊ثبت لینک جدید با دستور `/setlink link` امكان پذير است . . .!', 1, 'md')
+        bot.sendMessage(msg.chat_id_, msg.id_, 1, '📌 لینک ورود به گروه تنظیم نشده است\n🙊ثبت لینک جدید با دستور <code>/setlink link</code> امكان پذير است . . .!', 1, 'html')
             end
           end
         if text == '[Mm]ute all' then
