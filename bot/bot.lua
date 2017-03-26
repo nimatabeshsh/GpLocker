@@ -912,7 +912,6 @@ end
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '☑️کاربر [<b>'..user..' or '..usera..'</b>] از لیست مجاز خارج شد☹️', 1, 'html')
       end
   end
-      end
 -- mods
     if is_mod(msg) then
       local function getsettings(value)
