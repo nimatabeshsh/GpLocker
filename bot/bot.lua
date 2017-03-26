@@ -150,7 +150,7 @@ function mute(msg,chat,user)
       bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>شما نمیتوانید توانایی گفتگو در گروه را از دیگر مدیران سلب کنید!</code>', 'html')
     else
   db:sadd(SUDO..'mutes'..chat,user)
-  local t = '⚠️کاربر [<b>'..user..'</b>] در لیست سکوت به مدت نامحدود قرار گرفت🙂'
+  local t = '⚠️کاربر [<b>'..user..' or '..usera..'</b>] در لیست سکوت به مدت نامحدود قرار گرفت🙂'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   end
@@ -160,7 +160,7 @@ function unban(msg,chat,user)
     return false
     end
    db:srem(SUDO..'banned'..chat,user)
-  local t = '☑️کاربر [<b>'..user..'</b>]  از لیست بن خارج شد🙄'
+  local t = '☑️کاربر [<b>'..user..' or '..usera..'</b>]  از لیست بن خارج شد🙄'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   ------------------------------------------------------------
@@ -169,7 +169,7 @@ function unmute(msg,chat,user)
     return false
     end
    db:srem(SUDO..'mutes'..chat,user)
-  local t = '⚠️کاربر [<b>'..user..'</b>]  از لیست سکوت خارج شد🙂'
+  local t = '⚠️کاربر [<b>'..user..' or '..usera..'</b>]  از لیست سکوت خارج شد🙂'
   bot.sendMessage(msg.chat_id_, msg.id_, 1, t,1, 'html')
   end
   ------------------------------------------------------------
@@ -725,7 +725,7 @@ end
             end
           if text == 'remlink' then
             db:del(SUDO..'grouplink'..msg.chat_id_)
-          bot.sendMessage(msg.chat_id_, msg.id_, 1,'<code>>لینک تنظیم شده با موفقیت بازنشانی گردید.</code>', 1, 'html')
+          bot.sendMessage(msg.chat_id_, msg.id_, 1,'لینک تنظیم شده با موفقیت بازنشانی گردید.', 1, 'html')
             end
             if text and text:match('^setname (.*)') then
             local name = text:match('^setname (.*)')
@@ -930,8 +930,8 @@ end
           db:set(SUDO..'muteall'..msg.chat_id_,true)
         bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>فیلتر تمامی گفتگو ها فعال گردید!</code>', 1, 'html')
           end
-        if text and text:match('^[Ll]ock gp (%d+)[mhs]') or text and text:match('^[Ll]ock gp (%d+) [mhs]') then
-          local matches = text:match('^[Ll]ock gp (.*)')
+        if text and text:match('^[Ll]ockgp (%d+)[mhs]') or text and text:match('^[Ll]ockgp (%d+) [mhs]') then
+          local matches = text:match('^[Ll]ockgp (.*)')
           if matches:match('(%d+)h') then
           time_match = matches:match('(%d+)h')
           time = time_match * 3600
@@ -1015,17 +1015,19 @@ end
           end
         bot.resolve_username(username,kick_username)
         end
-        if text == 'ban' and tonumber(msg.reply_to_message_id_) > 0 then
+        if text == 'ban' or text == 'بن' and tonumber(msg.reply_to_message_id_) > 0 then
         function banreply(extra, result, success)
         ban(msg,msg.chat_id_,result.sender_user_id_)
           end
         bot.getMessage(msg.chat_id_, tonumber(msg.reply_to_message_id_),banreply)
         end
-      if text and text:match('^ban (%d+)') then
+      if text and text:match('^ban (%d+)') or text:match('^بن (%d+)') then
         ban(msg,msg.chat_id_,text:match('ban (%d+)'))
+		ban(msg,msg.chat_id_,text:match('بن (%d+)'))
         end
-      if text and text:match('^ban @(.*)') then
+      if text and text:match('^ban (%d+)') or text:match('^بن (%d+)') then
         local username = text:match('ban @(.*)')
+		local usernamea = text:match('بن @(.*)')
         function banusername(extra,result,success)
           if result.id_ then
             ban(msg,msg.chat_id_,result.id_)
@@ -1036,17 +1038,19 @@ end
           end
         bot.resolve_username(username,banusername)
         end
-      if text == 'unban' and tonumber(msg.reply_to_message_id_) > 0 then
+      if text == 'unban' or text == 'انبن' and tonumber(msg.reply_to_message_id_) > 0 then
         function unbanreply(extra, result, success)
         unban(msg,msg.chat_id_,result.sender_user_id_)
           end
         bot.getMessage(msg.chat_id_, tonumber(msg.reply_to_message_id_),unbanreply)
         end
-      if text and text:match('^unban (%d+)') then
+      if text and text:match('^unban (%d+)') or text:match('^انبن (%d+)') then
         unban(msg,msg.chat_id_,text:match('unban (%d+)'))
+		unban(msg,msg.chat_id_,text:match('انبن (%d+)'))
         end
-      if text and text:match('^unban @(.*)') then
+      if text and text:match('^unban (%d+)') or text:match('^انبن (%d+)') then
         local username = text:match('unban @(.*)')
+		local usernamea = text:match('انبن @(.*)')
         function unbanusername(extra,result,success)
           if result.id_ then
             unban(msg,msg.chat_id_,result.id_)
@@ -1057,17 +1061,19 @@ end
           end
         bot.resolve_username(username,unbanusername)
         end
-        if text == 'silentuser' and tonumber(msg.reply_to_message_id_) > 0 then
+        if text == '[Mm]ute' or text == 'سكوت' and tonumber(msg.reply_to_message_id_) > 0 then
         function mutereply(extra, result, success)
         mute(msg,msg.chat_id_,result.sender_user_id_)
           end
         bot.getMessage(msg.chat_id_, tonumber(msg.reply_to_message_id_),mutereply)
         end
-      if text and text:match('^silentuser (%d+)') then
-        mute(msg,msg.chat_id_,text:match('silentuser (%d+)'))
+      if text and text:match('^[Mm]ute (%d+)') or text:match('^سكوت (%d+)') then
+        mute(msg,msg.chat_id_,text:match('[Mm]ute (%d+)'))
+		mute(msg,msg.chat_id_,text:match('سكوت (%d+)'))
         end
-      if text and text:match('^silentuser @(.*)') then
-        local username = text:match('silentuser @(.*)')
+      if text and text:match('^[Mm]ute (%d+)') or text:match('^سكوت (%d+)') then
+        local username = text:match('[Mm]ute @(.*)')
+		local usernamea = text:match('سكوت @(.*)')
         function muteusername(extra,result,success)
           if result.id_ then
             mute(msg,msg.chat_id_,result.id_)
@@ -1078,17 +1084,19 @@ end
           end
         bot.resolve_username(username,muteusername)
         end
-      if text == 'unsilentuser' and tonumber(msg.reply_to_message_id_) > 0 then
+      if text == '[Uu]nmute' or text == 'رفع سكوت' and tonumber(msg.reply_to_message_id_) > 0 then
         function unmutereply(extra, result, success)
         unmute(msg,msg.chat_id_,result.sender_user_id_)
           end
         bot.getMessage(msg.chat_id_, tonumber(msg.reply_to_message_id_),unmutereply)
         end
-      if text and text:match('^unsilentuser (%d+)') then
-        unmute(msg,msg.chat_id_,text:match('unsilentuser (%d+)'))
+      if text and text:match('^[Uu]nmute (%d+)') or text:match('^رفع سكوت (%d+)') then
+        unmute(msg,msg.chat_id_,text:match('[Uu]nmute (%d+)'))
+		unmute(msg,msg.chat_id_,text:match('رفع سكوت (%d+)'))
         end
-      if text and text:match('^unsilentuser @(.*)') then
-        local username = text:match('unsilentuser @(.*)')
+     if text and text:match('^[Uu]nmute (%d+)') or text:match('^رفع سكوت (%d+)') then
+        local username = text:match('[Uu]nmute @(.*)')
+		local usernamea = text:match('رفع سكوت @(.*)')
         function unmuteusername(extra,result,success)
           if result.id_ then
             unmute(msg,msg.chat_id_,result.id_)
@@ -1120,30 +1128,9 @@ end
           end
         bot.resolve_username(username,invite_username)
         end
-      if text and text:match('^del (%d+)$') then
-        local limit = tonumber(text:match('^del (%d+)$'))
-        if limit > 100 then
-         bot.sendMessage(msg.chat_id_, msg.id_, 1, 'تعداد پیام وارد شده از حد مجاز (100 پیام) بیشتر است !', 1, 'html')
-          else
-         function cb(a,b,c)
-        local msgs = b.messages_
-        for i=1 , #msgs do
-          delete_msg(msg.chat_id_,{[0] = b.messages_[i].id_})
-        end
-        end
-        bot.getChatHistory(msg.chat_id_, 0, 0, limit + 1,cb)
-        bot.sendMessage(msg.chat_id_, msg.id_, 1, limit..' پیام اخیر گروه پاک شد !', 1, 'html')
-        end
-        end
-      if tonumber(msg.reply_to_message_id_) > 0 then
-    if text == "del" then
-        delete_msg(msg.chat_id_,{[0] = tonumber(msg.reply_to_message_id_),msg.id_})
-    end
-        end
-	
-    if text == 'managers' or text == 'mods' then
+    if text == 'modlist' or text == 'لیست مالکان' then
           local list = db:smembers(SUDO..'mods:'..msg.chat_id_)
-          local t = '<code>>لیست مدیران گروه:</code> \n\n'
+          local t = '✨ لیست مالکان گروه \n\n'
           for k,v in pairs(list) do
           t = t..k.." - <code>"..v.."</code>\n" 
           end
@@ -1153,25 +1140,27 @@ end
           end
           bot.sendMessage(msg.chat_id_, msg.id_, 1,t, 1, 'html')
       end
-      if text == 'delete mods' or text == 'delete managers' then
+      if text == 'cleam modlist' or text == 'پاکسازی لیست مدیران' then
         db:del(SUDO..'mods:'..msg.chat_id_)
-          bot.sendMessage(msg.chat_id_, msg.id_, 1,'<code>>لیست مدیران گروه با موفقیت بازنشانی شد</code>', 1, 'html')
+          bot.sendMessage(msg.chat_id_, msg.id_, 1,'✅لیست مدیران گروه پاک شد🙁', 1, 'html')
         end
-      if text and text:match('^filter +(.*)') then
+      if text and text:match('^filter +(.*)') or text:match('^فیلتر +(.*)') then
         local w = text:match('^filter +(.*)')
+		local wa = text:match('^فیلتر +(.*)')
          db:sadd(SUDO..'filters:'..msg.chat_id_,w)
-          bot.sendMessage(msg.chat_id_, msg.id_, 1,'" '..w..' "  <code>>به لیست کلمات فیلتر شده اضاف گردید!</code>', 1, 'html')
+          bot.sendMessage(msg.chat_id_, msg.id_, 1,'☑️کلمه " '..w..' or '..wa..'" در لیست فیلتر قرار گرفت🙂', 1, 'html')
        end
-      if text and text:match('^unfilter +(.*)') then
+      if text and text:match('^unfilter +(.*)') or text:match('^رفع فیلتر +(.*)') then
         local w = text:match('^unfilter +(.*)')
+		local w = text:match('^رفع فیلتر +(.*)')
          db:srem(SUDO..'filters:'..msg.chat_id_,w)
-          bot.sendMessage(msg.chat_id_, msg.id_, 1,'" '..w..' "  <code>>از لیست کلمات فیلتر شده پاک شد!</code>', 1, 'html')
+          bot.sendMessage(msg.chat_id_, msg.id_, 1,'🔘کلمه " '..w..' or '..wa..'" از لیست فیلتر خارج شد🙂', 1, 'html')
        end
-      if text == 'delete filterlist' then
+      if text == 'clean filterlist' or text == 'پاکسازی لیست فیلتر' then
         db:del(SUDO..'filters:'..msg.chat_id_)
-          bot.sendMessage(msg.chat_id_, msg.id_, 1,'<code>>تمامی کلمات فیلتر شده با موفقیت حذف گردیدند.</code>', 1, 'html')
+          bot.sendMessage(msg.chat_id_, msg.id_, 1,'✅لیست کلمات فیلتر شده پاک شد🙂', 1, 'html')
         end
-      if text == 'admins' or text == 'adminlist' then
+      if text == 'adminlist' or text == 'لیست ادمین ها' then
         local function cb(extra,result,success)
         local list = result.members_
            local t = '<code>>لیست ادمین های گروه:</code>\n\n'
@@ -1184,9 +1173,9 @@ end
           end
        bot.channel_get_admins(msg.chat_id_,cb)
       end
-      if text == 'filterlist' then
+      if text == 'filterlist' or text == 'لیست فیلتر' then
           local list = db:smembers(SUDO..'filters:'..msg.chat_id_)
-          local t = '<code>>لیست کلمات فیلتر شده در گروه:</code> \n\n'
+          local t = '⭕️لیست کلمات فیلتر شده: \n\n'
           for k,v in pairs(list) do
           t = t..k.." - "..v.."\n" 
           end
@@ -1224,28 +1213,13 @@ end
 			 if text == 'bot' then
           bot.sendMessage(msg.chat_id_, msg.id_, 1,'<b>BOT Online!</b>', 1, 'html')
       end
-        if text and text:match('whois (%d+)') then
-              local id = text:match('whois (%d+)')
-            local text = 'برای مشاهده اطلاعات کاربر کلیک کنید.'
-			--{"👤 برای مشاهده کاربر کلیک کنید!","Click to view User 👤"}
-            tdcli_function ({ID="SendMessage", chat_id_=msg.chat_id_, reply_to_message_id_=msg.id_, disable_notification_=0, from_background_=1, reply_markup_=nil, input_message_content_={ID="InputMessageText", text_=text, disable_web_page_preview_=1, clear_draft_=0, entities_={[0] = {ID="MessageEntityMentionName", offset_=0, length_=36, user_id_=id}}}}, dl_cb, nil)
-              end
-        if text == "whois" then
-        function id_by_reply(extra, result, success)
-        bot.sendMessage(msg.chat_id_, msg.id_, 1, '<code>شناسه:</code> [<b>'..result.sender_user_id_..'</b>]\n<code>تعداد پیام های ارسالی:</code> [<b>'..(db:get(SUDO..'total:messages:'..msg.chat_id_..':'..result.sender_user_id_) or 0)..'</b>]', 1, 'html')
-        end
-         if tonumber(msg.reply_to_message_id_) == 0 then
-          else
-    bot.getMessage(msg.chat_id_, tonumber(msg.reply_to_message_id_),id_by_reply)
-      end
-        end
 
           end
         end
       end
    -- member
-   if text == 'ping' then
-          local a = {"<code>ربات فعال و آماده کار است.</code>","<code>ربات فعال است</code>","<b>pong!</b>"}
+   if text == 'ping' or text == 'پینگ' then
+          local a = {"انلاینم🙂","انلاينم داداچ 😐✔️","انلاينم باو ☺️✅"}
           bot.sendMessage(msg.chat_id_, msg.id_, 1,''..a[math.random(#a)]..'', 1, 'html')
       end
 	  db:incr("allmsg")
