@@ -9,7 +9,7 @@ db = redis.connect('127.0.0.1', 6379)
 BASE = '/home/bot/gplocker/bot/'
 SUDO = 238773538 --sudo id
 sudo_users = {238773538}
-BOTS = 330614906 --bot id
+BOTS = 280333928 --bot id
 bot_id = db:get(SUDO..'bot_id')
 function vardump(value)
   print(serpent.block(value, {comment=false}))
@@ -39,7 +39,7 @@ end
 end
 ------------------------------------------------------------
 function is_bot(msg)
-  if tonumber(BOTS) == 330614906 then
+  if tonumber(BOTS) == 280333928 then
     return true
     else
     return false
