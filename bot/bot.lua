@@ -608,8 +608,7 @@ function vardump(value, depth, key)
 				tdcli.sendText(chat_id, msg.id_, 0, 1, nil, text, 1, 'html')
 				redis:sadd('bot:banned:'..msg.chat_id_, msg.sender_user_id_)
 				redis:del('warns'..msg.chat_id_..msg.sender_user_id_)
-				end
-				end
+				 end
 				end
 				if redis:get('setlock'..msg.chat_id_) == "del" then
 				tdcli.deleteMessages(chat_id, {[0] = msg.id_})
@@ -621,7 +620,7 @@ function vardump(value, depth, key)
 					end
 				tdcli.sendText(chat_id, msg.id_, 0, 1, nil, text, 1, 'html')
 				redis:sadd('bot:banned:'..msg.chat_id_, msg.sender_user_id_)
-				end
+				 end
 				end
 
 		
