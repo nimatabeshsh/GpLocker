@@ -510,6 +510,7 @@ function vardump(value, depth, key)
       local chat_id = msg.chat_id_
       local user_id = msg.sender_user_id_
       local reply_id = msg.reply_to_message_id_
+	  end
 
 
 
